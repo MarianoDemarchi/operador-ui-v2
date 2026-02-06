@@ -5,12 +5,11 @@ import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
+import LogsLotes from "../features/logs/pages/LogsLotes";
 
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
-  const LogsLotes = lazy(() => import("../features/logs/pages/LogsLotes.tsx"));
-
   const { toggleLogs, showLogs } = useUI();
 
   return (
