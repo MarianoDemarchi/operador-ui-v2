@@ -9,7 +9,7 @@ import "../table_transicion.css";
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
-  const Logs = lazy(() => import("../features/logs/pages/Logs.tsx"));
+  const LogsLotes = lazy(() => import("../features/logs/pages/LogsLotes.tsx"));
 
   const { toggleLogs, showLogs } = useUI();
 
@@ -73,7 +73,7 @@ const AppLayout: React.FC = () => {
                 <Spin style={{ margin: "20px auto", display: "block" }} />
               }
             >
-              <Logs openLogs={showLogs} />
+              <LogsLotes openLogs={showLogs} />
             </Suspense>
           </div>
         </div>
