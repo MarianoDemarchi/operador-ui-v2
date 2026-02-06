@@ -1,15 +1,16 @@
-import React, {  Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { Layout, Button, Spin } from "antd";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
-import LogsLotes from "../features/logs/pages/LogsLotes";
 
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
+  const Logs = lazy(() => import("../features/logs/pages/Logs.tsx"));
+
   const { toggleLogs, showLogs } = useUI();
 
   return (
@@ -72,7 +73,7 @@ const AppLayout: React.FC = () => {
                 <Spin style={{ margin: "20px auto", display: "block" }} />
               }
             >
-              <LogsLotes openLogs={showLogs} />
+              <Logs openLogs={showLogs} />
             </Suspense>
           </div>
         </div>
