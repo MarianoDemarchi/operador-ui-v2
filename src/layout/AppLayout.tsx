@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
-const Logs = lazy(() => import("../features/logs/pages/Logs"));
+const Logs = lazy(() => import("../features/logs/pages/Logs.tsx"));
 
 const { Content } = Layout;
 
