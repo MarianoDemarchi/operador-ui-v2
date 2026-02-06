@@ -5,9 +5,7 @@ import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
-const LogsLotes = lazy(() =>
-  import("../features/logs/pages/Logs").then((m) => ({ default: m.LogsLotes })),
-);
+const Logs = lazy(() => import("../features/logs/pages/Logs"));
 
 const { Content } = Layout;
 
@@ -74,7 +72,7 @@ const AppLayout: React.FC = () => {
                 <Spin style={{ margin: "20px auto", display: "block" }} />
               }
             >
-              <LogsLotes openLogs={showLogs} />
+              <Logs openLogs={showLogs} />
             </Suspense>
           </div>
         </div>
