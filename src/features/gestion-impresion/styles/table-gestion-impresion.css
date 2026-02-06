@@ -1,0 +1,18 @@
+/* Transición para el contenedor principal */
+.table-container {
+  transition: all 0.5s ease-in-out;
+}
+
+/* Forzamos a que el cuerpo de la tabla de Ant Design herede la transición */
+.table-container .ant-table-body {
+  transition: max-height 0.5s ease-in-out !important;
+}
+
+/* Si usas el scroll dinámico de Ant Design, ellos manejan max-height o height */
+.table-container.logs-open .ant-table-body {
+  max-height: 400px !important;
+}
+
+.table-container.logs-closed .ant-table-body {
+  max-height: 750px !important;
+}
