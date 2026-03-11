@@ -5,7 +5,7 @@ import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
-import Logs from "../features/logs/pages/Logs.tsx";
+import LogsV2 from "../features/logs/pages/LogsV2";
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
@@ -71,7 +71,7 @@ const AppLayout: React.FC = () => {
                 <Spin style={{ margin: "20px auto", display: "block" }} />
               }
             >
-              <Logs openLogs={showLogs}></Logs>
+              <LogsV2 openLogs={showLogs}></LogsV2>
             </Suspense>
           </div>
         </div>
