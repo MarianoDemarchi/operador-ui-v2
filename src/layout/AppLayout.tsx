@@ -5,8 +5,7 @@ import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
-import Logs from "../features/logs/pages/Logs";
-
+import Logs from "../features/logs/pages/Logs.tsx";
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
