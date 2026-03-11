@@ -23,12 +23,14 @@ export const LotesRowExpand = ({ lote }: { lote: LoteLegacy }) => {
   ];
 
   return (
-    <Table
-      rowKey="Nombre"
-      columns={columns}
-      dataSource={archivos}
-      pagination={false}
-      size="small"
-    />
+    <div style={{marginBottom:15}}>
+      <Table
+        rowKey="Nombre"
+        columns={columns}
+        dataSource={archivos}
+        pagination={false}
+        size="small"
+      />
+    </div>
   );
 };

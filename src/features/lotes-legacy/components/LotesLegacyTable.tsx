@@ -1,10 +1,11 @@
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { LoteLegacy } from "../models/lote-legacy.model";
 import { LotesRowExpand } from "./LotesLegacyRow";
 import { useUI } from "../../../context/UIContext";
-import "../../../table_transicion.css"
-
+import "../../../table_transicion.css";
+import { useCallback } from "react";
+import { SyncOutlined } from "@ant-design/icons";
 interface Props {
   data: LoteLegacy[];
   onSelect: (lote: LoteLegacy) => void;
@@ -21,11 +22,36 @@ export const LotesLegacyTable: React.FC<Props> = ({
   isLoading,
 }) => {
   const { showLogs } = useUI();
+
+  const renderEstado = useCallback((estado: string) => {
+    const map: Record<string, string> = {
+      "Enviado OK": "green",
+      "Preparado OK": "blue",
+      "Preparado ERROR": "red",
+      Preparando: "orange",
+      Enviando: "orange",
+    };
+    return (
+      <Tag color={map[estado] ?? "default"}>
+        {estado}
+        {estado === "Enviando" || estado === "Preparando" ? (
+          <SyncOutlined spin style={{ marginLeft: 6 }} />
+        ) : (
+          ""
+        )}
+      </Tag>
+    );
+  }, []);
+
   const columns: ColumnsType<LoteLegacy> = [
     { title: "ID Lote", dataIndex: "id_lote" },
     { title: "Cliente", dataIndex: "nombre" },
     { title: "Nombre", dataIndex: "l_nombre", width: 500 },
-    { title: "Estado", dataIndex: "estado" },
+    {
+      title: "Estado",
+      render: (_, r) => renderEstado(r.estado),
+    },
+
     {
       title: "Mensajes",
       render: (_, r) => Number(r.mensajes ?? 0).toLocaleString("es-AR"),

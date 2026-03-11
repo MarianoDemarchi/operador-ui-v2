@@ -1,4 +1,4 @@
-import { Popconfirm, Table } from "antd";
+import { Popconfirm, Table, Tooltip } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { Cabecera } from "../models/cabecera.model";
 import {
@@ -57,29 +57,46 @@ export const EmisionesRowExpand: React.FC<Props> = ({
         ),
     },
     {
+      
       title: "Aux Ok",
       align: "center",
       render: (_, r) => {
-        const ok =
-          r.sube_rot_rem?.resultado !== "0" &&
-          r.imprime_CO === "si" &&
-          r?.envia_co_imprime?.resultado === 0;
-
+        const ok = r.sube_rot_rem?.resultado !== "0" && r.imprime_CO === "si";
         return ok ? (
           <Popconfirm
             title="Confirmar envío"
-            description={`¿Está seguro que desea enviar el email de la cabecera ${r.id_cabecera} ? 
-            Se enviara un email con los links de descarga de los archivos `}
+            description={
+              r?.envia_co_imprime?.resultado === 0
+                ? `¿Está seguro que desea enviar el email de la cabecera ${r.id_cabecera} ? En nuestros registros ya realizaste un envio`
+                : `¿Está seguro que desea enviar el email de la cabecera ${r.id_cabecera} ? 
+            Se enviara un email con los links de descarga de los archivos `
+            }
             okText="Sí, enviar"
             cancelText="Cancelar"
             onConfirm={() => onClick(r)}
           >
-            <MailOutlined
-              style={{ color:  r?.envia_co_imprime?.resultado === 0 ?  "#52c41a" : "#1a25c4", fontSize: 17 }}
-            />
+            <Tooltip
+              title={
+                r?.envia_co_imprime?.resultado === 0
+                  ? "Email enviado"
+                  : "Email no enviado"
+              }
+            >
+              <MailOutlined
+                style={{
+                  color:
+                    r?.envia_co_imprime?.resultado === 0
+                      ? "#52c41a"
+                      : "#1a25c4",
+                  fontSize: 17,
+                }}
+              />
+            </Tooltip>
           </Popconfirm>
         ) : (
-          <CloseCircleFilled style={{ color: "#ff4d4f", fontSize: 17 }} />
+          <Tooltip title={"Imprime local"}>
+            <CloseCircleFilled style={{ color: "#ff4d4f", fontSize: 17 }} />
+          </Tooltip>
         );
       },
     },

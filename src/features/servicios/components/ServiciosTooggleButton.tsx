@@ -1,4 +1,4 @@
-import { Button, Modal, theme } from "antd";
+import {  Modal, Switch, theme } from "antd";
 import type { Servicio } from "../models/servicio.model";
 
 interface Props {
@@ -16,24 +16,24 @@ export const ServiciosToogleButton: React.FC<Props> = ({
 
   const isActive = servicio.estado === 0;
 
-  const showConfirm = () => {
+  const showConfirm = (checked: boolean) => {
     Modal.confirm({
-      title: isActive ? "Desactivar servicio" : "Activar servicio",
+      title: checked ? "Activar servicio" : "Desactivar servicio",
       content: (
         <>
           ¿Estás seguro que deseas{" "}
-          <strong>{isActive ? "desactivar" : "activar"}</strong> el servicio{" "}
+          <strong>{checked ? "activar" : "desactivar"}</strong> el servicio{" "}
           <strong>{servicio.nombre}</strong>?
         </>
       ),
-      okText: isActive ? "Desactivar" : "Activar",
+      okText: checked ? "Activar" : "Desactivar",
       okButtonProps: {
-        danger: isActive,
+        danger: !checked,
         loading,
-        style: !isActive
+        style: checked
           ? {
-              backgroundColor: token.colorSuccess,
-              borderColor: token.colorSuccess,
+              backgroundColor: token.colorInfo,
+              borderColor: token.colorInfo,
             }
           : undefined,
       },
@@ -43,21 +43,12 @@ export const ServiciosToogleButton: React.FC<Props> = ({
   };
 
   return (
-    <Button
-      size="small"
-      type="primary"
-      danger={isActive}
-      onClick={showConfirm}
-      style={
-        !isActive
-          ? {
-              backgroundColor: token.colorSuccess,
-              borderColor: token.colorSuccess,
-            }
-          : undefined
-      }
-    >
-      {isActive ? "Desactivar" : "Activar"}
-    </Button>
+    <Switch
+      checked={isActive}
+      loading={loading}
+      checkedChildren="Activo"
+      unCheckedChildren="Detenido"
+      onChange={(checked) => showConfirm(checked)}
+    />
   );
 };

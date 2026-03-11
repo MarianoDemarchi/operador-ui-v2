@@ -8,14 +8,13 @@ function calcularCentroOperativo(cabeceras: Cabecera[]): number {
   cabeceras.forEach((c) => {
     if (c.imprime_CO === "si") {
       flags.push(1);
-      flags.push(c.envia_co_imprime !== undefined ? 2 : 3);
+      flags.push(c.envia_co_imprime?.resultado === 0 ? 2 : 3);
     } else {
       flags.push(0);
     }
   });
-
-  if (flags.includes(1) && flags.includes(2) && !flags.includes(3)) return 1;
   if (flags.includes(1) && flags.includes(3)) return 2;
+  if (flags.includes(1) && flags.includes(2)) return 1;
   if (flags.includes(0)) return 3;
   return 4;
 }
@@ -61,7 +60,7 @@ export function useEmisionesQuery() {
           distribuidora: e.distribuidora,
           fecha: e.fecha,
           comprobantes: e.comprobantes,
-          envia_telegram: e.envia_telegram,
+          envia_telegram: JSON.parse(e.envia_telegram),
           proceso: e.proceso,
           id_archivolog: e.id_archivolog,
           cabeceras,

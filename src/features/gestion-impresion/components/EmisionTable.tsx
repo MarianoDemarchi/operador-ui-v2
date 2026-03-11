@@ -28,11 +28,13 @@ export const EmisionesTable: React.FC<Props> = ({
       className={`table-container ${showLogs ? "logs-open" : "logs-closed"}`}
     >
       <Table<Emision>
+        
         scroll={{ y: !showLogs ? 600 : 400, x: "hidden" }}
         loading={isLoading || isFetching}
         pagination={false}
         rowKey="id_emision"
         columns={emisionColumns}
+        size="large"
         dataSource={data}
         expandable={{
           expandedRowRender: (row) =>

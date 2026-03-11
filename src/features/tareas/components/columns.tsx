@@ -15,7 +15,7 @@ export const tareaColumns: ColumnsType<Tarea> = [
       ),
   },
   {
-    width: 150,
+    width: 250,
 
     title: "Servicio",
     dataIndex: "descripcion",

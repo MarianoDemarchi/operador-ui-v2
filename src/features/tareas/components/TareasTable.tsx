@@ -1,10 +1,9 @@
 import { Table } from "antd";
 import type { Tarea } from "../models/tarea.model";
 import { useState } from "react";
-import type { TableRowSelection } from "antd/es/table/interface";
 import { tareaColumns } from "./columns";
 import { useUI } from "../../../context/UIContext";
-import "../../../table_transicion.css"
+import "../../../table_transicion.css";
 
 export const TareaTable: React.FC<{
   onSelect: (tarea: Tarea) => void;
@@ -16,18 +15,7 @@ export const TareaTable: React.FC<{
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-  const rowSelection: TableRowSelection<Tarea> = {
-    type: "radio", // tipo correcto
-    selectedRowKeys,
-    onChange: (keys, selectedRows) => {
-      setSelectedRowKeys(keys);
-      console.log("Fila seleccionada:", selectedRows[0]);
-    },
-    getCheckboxProps: (record) => ({
-      disabled: record.tiempo_excedido.charAt(0) === "-", // solo seleccionables
-    }),
-    hideSelectAll: true,
-  };
+
 
   const toggleRowSelection = (record: Tarea) => {
     if (record.tiempo_excedido.charAt(0) === "-") return; // solo seleccionables
@@ -51,8 +39,7 @@ export const TareaTable: React.FC<{
         pagination={false}
         loading={isFetching}
         columns={tareaColumns}
-        dataSource={data}
-        rowSelection={rowSelection}
+        dataSource={data.filter((e) => e.accion_pendiente !== "CSV_Entrega_AD")}
         onRow={(record) => ({
           onClick: () => toggleRowSelection(record), // clic sobre fila
           style: {

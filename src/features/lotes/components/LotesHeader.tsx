@@ -1,14 +1,16 @@
-import { Button, Space } from "antd";
-import Title from "antd/es/typography/Title";
+import { Button, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
-
+const { Title, Text } = Typography;
 export const LotesHeader: React.FC<{ onReload: () => void }> = ({
   onReload,
 }) => (
-  <Space style={{ marginBottom: 16 }}>
+  <div style={{ marginBottom: 16 }}>
     <Title level={4}>
-      Lotes Creados V2{" "}
+      Gestión de Envíos Digitales{" "}
       <Button type="text" icon={<ReloadOutlined />} onClick={onReload} />
     </Title>
-  </Space>
+    <Text type="secondary">
+      Visualiza el estado, el progreso y los resultados de los envíos.
+    </Text>
+  </div>
 );

@@ -12,9 +12,10 @@ const Sidebar = () => {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
 
+  console.log(location.pathname);
   return (
     <Sider
-    style={{background:" #001529"}}
+      style={{ background: " #001529" }}
       width={200}
       collapsible
       collapsed={collapsed}

@@ -1,8 +1,9 @@
 import { Layout, Row, Col } from "antd";
 
-import logoAcsa from "../../../assets/images/LogoAguasGrande.png";
+import logoAcsa from "../../../assets/logo_aguas.png";
 import logoEcog from "../../../assets/images/ecogas-dd.png";
 import logoMando from "../../../assets/logo_mando_transp.png";
+import logoSite from  "../../../assets/logo_site.png"
 import { PortalCard } from "../components/CardPortal";
 import "../styles/portales.css";
 const { Content } = Layout;
@@ -40,6 +41,15 @@ export const ListaPortales = () => {
             logo={logoMando}
             className="divMando"
             imageStyle={{ width: 300 }}
+          />
+        </Col>
+                <Col>
+          <PortalCard
+            href="https://site-impresion.mando.ar/"
+            logo={logoSite}
+            className="divMandoSite"
+            imageStyle={{ width: 360
+             }}
           />
         </Col>
       </Row>

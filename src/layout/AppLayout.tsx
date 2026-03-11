@@ -1,15 +1,15 @@
-import React, {  Suspense } from "react";
+import React, { Suspense } from "react";
 import { Layout, Button, Spin } from "antd";
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import HeaderBar from "./HeaderBar";
 import { useUI } from "../context/UIContext";
 import "../table_transicion.css";
+import Logs from "../features/logs/pages/Logs";
 
 const { Content } = Layout;
 
 const AppLayout: React.FC = () => {
-
   const { toggleLogs, showLogs } = useUI();
 
   return (
@@ -23,7 +23,7 @@ const AppLayout: React.FC = () => {
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "16px",
+            paddingLeft: "16px",
             position: "relative",
           }}
         >
@@ -72,6 +72,7 @@ const AppLayout: React.FC = () => {
                 <Spin style={{ margin: "20px auto", display: "block" }} />
               }
             >
+              <Logs openLogs={showLogs}></Logs>
             </Suspense>
           </div>
         </div>

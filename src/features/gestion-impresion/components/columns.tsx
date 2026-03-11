@@ -64,9 +64,9 @@ export const emisionColumns: ColumnsType<Emision> = [
 
         case 2:
           return (
-            <Tooltip title={"Falta Enviar email a centro operativo"}>
+            <Tooltip title={"Falta envio a centro operativo"}>
               {" "}
-              <MailOutlined style={{ color: "#ff00008a", fontSize: 17 }} />
+              <MailOutlined style={{ color: "#1a25c4", fontSize: 17 }} />
             </Tooltip>
           );
         case 3:
@@ -92,10 +92,11 @@ export const emisionColumns: ColumnsType<Emision> = [
     dataIndex: "envia_telegram",
     align: "center",
     render: (_, r) => {
+
       return (
         <Tooltip
           title={
-            r?.envia_telegram != null
+            r?.envia_telegram?.resultado === 0
               ? "Telegram sms enviado"
               : "Sms no enviado"
           }
@@ -103,7 +104,8 @@ export const emisionColumns: ColumnsType<Emision> = [
           <WhatsAppOutlined
             style={{
               fontSize: 17,
-              color: r?.envia_telegram != null ? "#00800096" : "#ff00008a",
+              color:
+                r?.envia_telegram?.resultado === 0 ? "#00800096" : "#ff4d4f",
             }}
           />
         </Tooltip>

@@ -1,19 +1,25 @@
-import { Button, Space } from "antd";
-import Title from "antd/es/typography/Title";
+import { Button, Typography } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
+
+const { Title, Text } = Typography;
 
 export const LotesLegacyHeader: React.FC<{
   onReload: () => void;
   isFetching: boolean;
 }> = ({ onReload, isFetching }) => (
-  <Space style={{ marginBottom: 16 }}>
+  <div style={{ marginBottom: 15 }}>
     <Title level={4}>
-      Gestion de Envios{" "}
+      Gestión de Envíos Digitales
       <Button
         type="text"
         icon={<ReloadOutlined spin={isFetching} />}
         onClick={onReload}
       />
     </Title>
-  </Space>
+
+    <Text type="secondary">
+      Crea y administra envíos, valida datos de clientes mediante archivos
+      muestrero, carga archivos comunes y actualiza métricas de envío.
+    </Text>
+  </div>
 );

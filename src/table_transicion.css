@@ -21,5 +21,6 @@
   background-color: #f5f7fa; /* Tu colorBgLayout */
   border-top: 1px solid #e5e7eb;
   padding: 16px;
+  padding-top: 0px !important;
   transition: all 0.5s ease;
 }

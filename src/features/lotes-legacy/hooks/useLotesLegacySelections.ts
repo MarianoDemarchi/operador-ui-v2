@@ -23,7 +23,7 @@ export const useLotesSelection = () => {
 
     return {
       canEnviar: lote.estado === "Preparado OK",
-      canCancelar: lote.estado === "Preparado OK",
+      canCancelar: lote.estado === "Preparado OK" || lote.estado === "Preparado ERROR"  ,
       canDetener: lote.estado === "Enviando",
       canSumarizar: lote.estado === "Enviado OK",
     };
