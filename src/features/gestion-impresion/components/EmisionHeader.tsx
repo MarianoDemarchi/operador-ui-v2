@@ -7,7 +7,7 @@ export const EmisionHeader: React.FC<{
   isFetching: boolean;
 }> = ({ onReload, isFetching }) => (
   <div style={{ marginBottom: 16 }}>
-    <Title level={4} style={{ marginBottom: 0 }}>
+    <Title level={4}>
       Gestión de Documentos
       <Button
         type="text"

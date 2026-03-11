@@ -46,7 +46,6 @@ export const ListaEmisionesPapel = () => {
       ) : (
         <Row gutter={[16, 16]}>
           <Col
-            style={{ paddingTop: 0 }}
             xs={24} // móvil: ocupa toda la fila
             md={22} // tablet/desktop: 2/3 del ancho
           >
