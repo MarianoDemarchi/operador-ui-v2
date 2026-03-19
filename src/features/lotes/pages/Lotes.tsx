@@ -1,3 +1,4 @@
+import { Skeleton } from "antd";
 import QueryErrorResult from "../../feedback/QueryErrorResult";
 import { LotesHeader } from "../components/LotesHeader";
 import { LotesTable } from "../components/LotesTable";
@@ -14,8 +15,11 @@ export const ListaLotesV2: React.FC = () => {
   return (
     <div style={{ width: "100%", padding: 16 }}>
       <LotesHeader onReload={refetch} />
-
-      <LotesTable data={data ?? []} isFetching={isFetching || isLoading} />
+      {isLoading ? (
+        <Skeleton active></Skeleton>
+      ) : (
+        <LotesTable data={data ?? []} isFetching={isFetching || isLoading} />
+      )}
     </div>
   );
 };
