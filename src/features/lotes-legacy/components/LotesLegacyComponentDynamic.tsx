@@ -1,4 +1,4 @@
-import { Form, Select, Radio, DatePicker } from "antd";
+import { Form, Select, Radio, DatePicker, AutoComplete } from "antd";
 import { useEffect } from "react";
 import {
   useLegacyDynamicFields,
@@ -113,16 +113,14 @@ export const DynamicFields: React.FC<Props> = ({
                 name={namePath}
                 rules={[{ required: true, message: "Campo obligatorio" }]}
               >
-                <Select
-                  showSearch
+                <AutoComplete
                   options={posibles.map((p: any) => ({
-                    label: p.valor,
                     value: p.valor,
                   }))}
+                  placeholder="Escribí para buscar"
                 />
               </Form.Item>
             );
-
           default:
             return null;
         }
