@@ -4,6 +4,7 @@ import {
   SettingOutlined,
   AppstoreOutlined,
   ProfileOutlined,
+  MonitorOutlined,
 } from "@ant-design/icons";
 import type { ReactNode } from "react";
 
@@ -14,4 +15,5 @@ export const menuIconMap: Record<string, ReactNode> = {
   generacionPapel: <AppstoreOutlined />,
   servicios: <SettingOutlined />,
   portales: <AppstoreOutlined />,
+  monitoreo: <MonitorOutlined />,
 };

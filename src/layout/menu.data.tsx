@@ -51,4 +51,10 @@ export const sidebarItems: AppMenuItem[] = [
     direction: "/portales",
     icon: "portales",
   },
+    {
+    id: 5,
+    label: "Monitoreo",
+    direction: "/monitoreo",
+    icon: "monitoreo",
+  },
 ];

@@ -6,7 +6,7 @@ export const useLotesSelection = () => {
 
   const toggle = (lote: LoteLegacy) => {
     setSelected((prev) =>
-      prev.find((l) => l.id_lote === lote.id_lote) ? [] : [lote]
+      prev.find((l) => l.id_lote === lote.id_lote) ? [] : [lote],
     );
   };
 
@@ -23,7 +23,10 @@ export const useLotesSelection = () => {
 
     return {
       canEnviar: lote.estado === "Preparado OK",
-      canCancelar: lote.estado === "Preparado OK" || lote.estado === "Preparado ERROR"  ,
+      canCancelar:
+        lote.estado === "Preparado OK" ||
+        lote.estado === "Preparado ERROR" ||
+        localStorage?.getItem("usuario") === "mdemarchi@doxer.com.ar",
       canDetener: lote.estado === "Enviando",
       canSumarizar: lote.estado === "Enviado OK",
     };

@@ -44,10 +44,22 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
 
   const canSubmit = camposRequeridosCompletos;
 
+  const buildMascara = (mascaras: Record<string, string>) => {
+    const orden = Object.keys(mascaras); // o venir del backend
+
+    const valores = orden
+      .map((key) => mascaras[key])
+      .filter((v) => v !== undefined && v !== null && v !== "");
+
+    if (!valores.length) return "";
+
+    return `*${valores.join("*")}*`;
+  };
+
   const onFinish = async (values: any) => {
     const parsed = {
       ...values,
-      recepcion: values.recepcion?.format("YYYY-MM-DD"),
+      recepcion: values.recepcion?.subtract(3, "hour").format("YYYY-MM-DD"),
       etiquetas: Object.fromEntries(
         Object.entries(values.etiquetas || {}).map(([k, v]: any) => [
           k,
@@ -55,10 +67,11 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
         ]),
       ),
     };
+
     const data = {
-      version: "v2", /////////////////////////////////GUARDA ESTO
+      version: "v2",
       etiquetas: parsed.etiquetas,
-      recepcion: values.recepcion,
+      recepcion: parsed.recepcion,
       id_servicio: values.servicio,
       diaEtiqueta: parsed.etiquetas.Dia,
       base: organizacion.base,
@@ -68,18 +81,16 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       canal: values.canal.charAt(0),
       archiv: [],
       archivoAdjunto: [],
-      mascara: `*${mascaras?.Distribuidora ? mascaras.Distribuidora : ""}*${
-        mascaras.Clientes == undefined ? "" : mascaras.Clientes
-      }*`,
+      mascara: buildMascara(mascaras), // 👈 FIX ACA
       nombre: "",
     };
 
-    await crearLote({
-      ...data,
-    });
+    await crearLote(data);
 
     form.resetFields();
-    (setOrganizacion(null), setServicio(null), onCancel());
+    setOrganizacion(null);
+    setServicio(null);
+    onCancel();
   };
 
   const mascaraMemo = useMemo(
@@ -92,7 +103,6 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     [form.getFieldValue("canal"), organizacion?.id, servicio?.id, mascaras],
   );
 
-  /* Reset controlado */
   useEffect(() => {
     if (!servicio || !organizacion) return;
 
@@ -177,6 +187,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <Radio value="sms">SMS</Radio>
         </Radio.Group>
       </Form.Item>
+
       {/* Archivos */}
       {servicio && (
         <Form.Item
@@ -212,14 +223,15 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
         <Space style={{ width: "100%", justifyContent: "flex-end" }}>
           <Button
             onClick={() => {
-              (form.resetFields(),
-                setOrganizacion(null),
-                setServicio(null),
-                onCancel());
+              form.resetFields();
+              setOrganizacion(null);
+              setServicio(null);
+              onCancel();
             }}
           >
             Cancelar
           </Button>
+
           <Button
             type="primary"
             htmlType="submit"

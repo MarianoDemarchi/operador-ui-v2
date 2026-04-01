@@ -14,4 +14,8 @@ const client3 = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL_PLANET,
   timeout: 60000,
 });
-export default {client,client2,client3};
+const client4 = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL_NONE,
+  timeout: 60000,
+});
+export default {client,client2,client3,client4};

@@ -44,24 +44,58 @@ export const LotesLegacyTable: React.FC<Props> = ({
   }, []);
 
   const columns: ColumnsType<LoteLegacy> = [
-    { title: "ID Lote", dataIndex: "id_lote" },
-    { title: "Cliente", dataIndex: "nombre" },
-    { title: "Nombre", dataIndex: "l_nombre", width: 500 },
+    {
+      title: "ID Lote",
+      dataIndex: "id_lote",
+      responsive: ["md"], // se oculta primero
+      ellipsis: true,
+      width: 120,
+    },
+    {
+      title: "Cliente",
+      dataIndex: "nombre",
+      responsive: ["sm"], // se oculta en mobile
+      ellipsis: true,
+      width: 120,
+    },
+    {
+      title: "Nombre",
+      dataIndex: "l_nombre",
+      ellipsis: true,
+
+      // 👇 siempre visible (columna principal)
+    },
+    {
+      title: "Preparado",
+      responsive: ["sm"], // visible desde tablet
+      ellipsis: true,
+      width: "10%",
+
+      render: (_, r) =>
+        r.estado === "Preparado OK" ? r.ts_preparado : r.ts_enviado,
+    },
     {
       title: "Estado",
+      // 👇 siempre visible (clave UX)
       render: (_, r) => renderEstado(r.estado),
+      width: "10%",
     },
-
     {
       title: "Mensajes",
+      align: "right",
+      width: 100,
       render: (_, r) => Number(r.mensajes ?? 0).toLocaleString("es-AR"),
     },
     {
-      title: "Rebotados",
+      title: "Entregados",
+      align: "right",
+      width: 100,
       render: (_, r) => String(r.entregados ?? ""),
     },
     {
-      title: "Entregados",
+      title: "Rebotados",
+      align: "right",
+      width: 100,
       render: (_, r) => String(r.rebotados ?? ""),
     },
   ];

@@ -36,6 +36,11 @@ const ListaPortales = lazy(() =>
     default: m.ListaPortales,
   })),
 );
+const Monitoreo = lazy(() =>
+  import("../features/monitoreo/page/Monitoreo").then((m) => ({
+    default: m.default,
+  })),
+);
 
 // ... tus imports lazy se mantienen igual ...
 
@@ -57,10 +62,11 @@ export const DashboardRoutes: React.FC = () => {
         <Route path="servicios/gestion" element={<ListaServicios />} />
         <Route path="generacionPapel" element={<ListaEmisionesPapel />} />
         <Route path="portales" element={<ListaPortales />} />
+        <Route path="monitoreo" element={<Monitoreo />} />
       </Route>
 
       {/* 404 para cualquier cosa dentro del dashboard que no coincida */}
-       <Route path="*" element={<PageNotFound />} /> 
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };
