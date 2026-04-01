@@ -72,30 +72,29 @@ function Monitoreo() {
       <Row justify="center" className="layout-row">
         <Col />
       </Row>
+      {sortedBaseNames.length !== 0 && (
+        <div>
+          {sortedBaseNames.map((baseName) => {
+            const lotesOrdenados = [...rawData[baseName]].sort((a, b) =>
+              (a.descripcion || "").localeCompare(b.descripcion || ""),
+            );
 
+            return (
+              <Card
+                key={baseName}
+                title={`Cliente: ${baseName?.split("-")[1]}`}
+                className="layout-card"
+                classNames={{ body: "layout-card-body" }}
+                bordered={false}
+                style={{ marginBottom: 16 }}
+              >
+                <MonitoreoAnomalias lotes={lotesOrdenados} />
+              </Card>
+            );
+          })}
+        </div>
+      )}
       <Splitter>
-        {sortedBaseNames.length !== 0 && (
-          <Splitter.Panel min={300}>
-            {sortedBaseNames.map((baseName) => {
-              const lotesOrdenados = [...rawData[baseName]].sort((a, b) =>
-                (a.descripcion || "").localeCompare(b.descripcion || ""),
-              );
-
-              return (
-                <Card
-                  key={baseName}
-                  title={`Cliente: ${baseName?.split("-")[1]}`}
-                  className="layout-card"
-                  classNames={{ body: "layout-card-body" }}
-                  bordered={false}
-                  style={{ marginBottom: 16 }}
-                >
-                  <MonitoreoAnomalias lotes={lotesOrdenados} />
-                </Card>
-              );
-            })}
-          </Splitter.Panel>
-        )}
         <Splitter.Panel min={1000}>
           <Splitter layout="horizontal">
             <Splitter.Panel>
