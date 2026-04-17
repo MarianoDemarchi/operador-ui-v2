@@ -21,7 +21,7 @@ export const ListaServicios: React.FC = () => {
     refetch,
   } = useServiciosQuery(cliente?.base);
 
-  if (isError) {
+  if (isError ) {
     return <QueryErrorResult error={error} onRetry={refetch} />;
   }
 

@@ -2,10 +2,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Servicio } from "../models/servicio.model";
 import { ServiciosApi } from "../../../api/servicio.api";
+import { message } from "antd";
 
 export const useServiciosQuery = (base?: string) => {
   const queryClient = useQueryClient();
-
 
   // =========================
   // Query: obtener servicios
@@ -33,6 +33,13 @@ export const useServiciosQuery = (base?: string) => {
       queryClient.invalidateQueries({
         queryKey: ["servicios", base],
       });
+    },
+    onError: (error: any) => {
+      message.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Error al actualizar el servicio",
+      );
     },
   });
 

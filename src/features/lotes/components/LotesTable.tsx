@@ -33,7 +33,18 @@ export const LotesTable: React.FC<{ data: Lote[]; isFetching: boolean }> =
       };
       return <Tag color={map[estado] ?? "default"}>{estado}</Tag>;
     }, []);
+    const parseFecha = (fecha:string) => {
+      try {
+        if (!fecha) return 0;
 
+        const [date, time] = fecha.split(" ");
+        const [day, month, year] = date.split("/");
+
+        return new Date(`${year}-${month}-${day}T${time}`).getTime();
+      } catch {
+        return 0;
+      }
+    };
     const columns: ColumnsType<Lote> = useMemo(
       () => [
         {
@@ -52,7 +63,13 @@ export const LotesTable: React.FC<{ data: Lote[]; isFetching: boolean }> =
           align: "center",
           render: renderEstado,
         },
-        { title: "Preparado", dataIndex: "ts_preparado", align: "center" },
+        {
+          title: "Enviado",
+          dataIndex: "ts_enviado",
+          align: "center",
+          sorter: (a, b) => parseFecha(a.ts_enviado) - parseFecha(b.ts_enviado),
+          defaultSortOrder: "descend",
+        },
         { title: "Mensajes", dataIndex: "mensajes", align: "center" },
         { title: "Entregados", dataIndex: "entregados", align: "center" },
         { title: "Rebotados", dataIndex: "rebotados", align: "center" },
@@ -76,7 +93,7 @@ export const LotesTable: React.FC<{ data: Lote[]; isFetching: boolean }> =
           size="small"
           pagination={false}
           sticky
-        scroll={{ y: !showLogs ? 700 : 400, x: "hidden" }}
+          scroll={{ y: !showLogs ? 700 : 400, x: "hidden" }}
           loading={isFetching}
           columns={columns}
           dataSource={data}

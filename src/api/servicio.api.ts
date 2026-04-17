@@ -5,13 +5,13 @@ import apiClients from "./client/client";
 export const ServiciosApi = {
   getByBase: (base: string) =>
     // apiClients.client2.get("/operadord-v2/servicios", {
-    apiClients.client.get("/operadorp/servicios", {
+    apiClients.client.get("/operador-api/servicios", {
       params: { base },
     }),
 
   toggle: (payload: { id_servicio: number; activo: number; base: string }) =>
-    apiClients.client2.put(
-      `operadord-v2/gestion-servicios` +
+    apiClients.client.put(
+      `operador-api/gestion-servicios` +
         `?id_servicio=${payload.id_servicio}` +
         `&db=${payload.base}` +
         `&activo=${payload.activo}`,
