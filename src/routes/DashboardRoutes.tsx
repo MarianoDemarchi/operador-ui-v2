@@ -38,7 +38,7 @@ const ListaPortales = lazy(() =>
 );
 const Monitoreo = lazy(() =>
   import("../features/monitoreo/page/Monitoreo").then((m) => ({
-    default: m.default,
+    default: m.Monitoreo,
   })),
 );
 

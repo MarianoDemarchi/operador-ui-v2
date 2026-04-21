@@ -24,7 +24,7 @@ interface ApiResponse {
   };
 }
 
-function Monitoreo() {
+export const Monitoreo  = () =>  {
   const { data, refetch, isFetching } = useQuery<ApiResponse>({
     queryKey: ["lotes"],
     queryFn: MonitoreoApi.getAll,
@@ -111,4 +111,3 @@ function Monitoreo() {
   );
 }
 
-export default Monitoreo;
