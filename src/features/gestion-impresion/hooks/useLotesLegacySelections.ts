@@ -9,6 +9,7 @@ export const useEmisionSelections = () => {
       prev.find((l) => l.id_emision === emision.id_emision) ? [] : [emision],
     );
   };
+  const clear = () => setSelected([]); 
 
   const state = useMemo(() => {
     const emision = selected[0];
@@ -27,6 +28,7 @@ export const useEmisionSelections = () => {
   return {
     selected,
     toggle,
+    clear,
     state,
   };
 };

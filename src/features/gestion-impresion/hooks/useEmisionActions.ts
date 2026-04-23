@@ -28,6 +28,16 @@ export interface MovimientoEmisionPayload {
   cabecerasExternas: Cabecera[];
 }
 
+type CrearEmisionDTO = {
+  fechaImpresion: string | null;
+  servicio: string;
+  distribuidora: string;
+  archivos: {
+    archivoP?: string;
+    logId: number;
+  }[];
+};
+
 const buildMovimientoPayload = (emision: Emision): FormData => {
   const cabecerasLocal: Cabecera[] = [];
   const cabecerasExternas: Cabecera[] = [];
@@ -55,7 +65,7 @@ const buildMovimientoPayload = (emision: Emision): FormData => {
   return fd;
 };
 
-const buildFormData = (emision: Emision) => {
+const buildFormData = (emision: CrearEmisionDTO) => {
   const fd = new FormData();
   fd.append("file", JSON.stringify(emision));
   return fd;
@@ -68,10 +78,10 @@ export const useEmisionActions = () => {
     queryClient.invalidateQueries({ queryKey: ["emisiones"] });
 
   const crear = useMutation({
-    mutationFn: async (emision: Emision) => {
+    mutationFn: async (emision_crear: CrearEmisionDTO) => {
       const resp = await EmsionesPapel.crear(
-        buildFormData(emision),
-        emision.servicio,
+        buildFormData(emision_crear),
+        emision_crear.servicio,
       );
 
       // ❌ Error lógico aunque sea 200

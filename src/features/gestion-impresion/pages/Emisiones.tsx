@@ -75,21 +75,20 @@ export const ListaEmisionesPapel = () => {
               setOpenDetalleDrawer={setOpenDetalleDrawer}
               setOpenTelegramDrawer={setOpenTelegramDrawer}
               setOpenInformeDrawer={setOpenInformeDrawer}
-              onEliminar={() => selected && actions.eliminar.mutate(selected)}
+              onEliminar={() =>
+                selected &&
+                actions.eliminar.mutate(selected, {
+                  onSuccess: () => {
+                    selection.clear(); 
+                  },
+                })
+              }
               onMovimiento={() =>
                 selected && actions.movimientoArchivos.mutate(selected)
               }
               disabled={selected === undefined ? true : false}
               loadingMovimiento={actions.movimientoArchivos.isPending}
               canEliminar={selection.state.canEliminar}
-
-              // canCancelar={selection.canCancelar}
-              // canDetener={selection.canDetener}
-              // canSumarizar={selection.canSumarizar}
-              // onEnviar={() => selected && actions.enviar.mutate(selected)}
-              // onCancelar={() => selected && actions.cancelar.mutate(selected)}
-              // onDetener={() => selected && actions.detener.mutate(selected)}
-              // onSumarizar={() => selected && actions.sumarizar.mutate(selected)}
             />
 
             <EmisionDrawerCreate

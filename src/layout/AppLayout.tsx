@@ -39,7 +39,7 @@ const AppLayout: React.FC = () => {
           style={{
             position: "fixed",
             bottom: showLogs ? 366 : 16, // Sube el botón cuando se ven los logs
-            right: 16,
+            left: 16,
             zIndex: 1100,
             transition: "bottom 500ms ease-in-out",
           }}

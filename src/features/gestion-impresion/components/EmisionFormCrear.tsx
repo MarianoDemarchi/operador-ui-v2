@@ -53,7 +53,6 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
   const canSubmit = camposRequeridosCompletos;
   const onFinish = async (values: any) => {
     const payload = {
-      ...values,
       fechaImpresion: values.fechaEmision
         ? dayjs(values.fechaEmision).format("YYYY-MM-DD")
         : null,
@@ -67,11 +66,15 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
     };
 
     try {
+      message.info(
+        "Este proceso puede demorar algunos minutos. No es necesario que esperes: podés cerrar el formulario y recibirás un mensaje al finalizar.",
+        8,
+      );
       await crear.mutateAsync(payload);
 
       // ✅ SOLO si el servidor respondió OK
       form.resetFields();
-      onCancel();
+      onCancel;
     } catch (error: any) {
       message.error(
         error?.response?.data?.message ||
@@ -158,7 +161,7 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
           htmlType="submit"
           disabled={!canSubmit}
         >
-          Generar
+          {crear.isPending ? "Generando" : "Generar"}
         </Button>
       </Space>
     </Form>

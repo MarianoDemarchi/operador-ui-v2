@@ -21,7 +21,7 @@ const labels: Record<ActionType, string> = {
   detener: "Deteniendo lote",
   sumarizar: "Sumarizando lote",
   listar: "Listando lotes",
-  actualizar: "Actualizando lotes",
+  actualizar: "Actualizando datos",
   crear: "Creando Lote",
   reenvio: "Generando Reenvio",
   control: "Generando archivo de control",
