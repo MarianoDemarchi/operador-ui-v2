@@ -51,6 +51,7 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
     cantArchivos > 0;
 
   const canSubmit = camposRequeridosCompletos;
+  console.log("archivosarchivosarchivosarchivos",archivos)
   const onFinish = async (values: any) => {
     const payload = {
       fechaImpresion: values.fechaEmision
@@ -61,7 +62,7 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
       archivos: archivos.map((a) =>
         servicio === "FAC"
           ? { archivoP: a.nombreArchivo, logId: a.logId }
-          : { logId: a.logId },
+          : { logId: a.nombreArchivo },
       ),
     };
 

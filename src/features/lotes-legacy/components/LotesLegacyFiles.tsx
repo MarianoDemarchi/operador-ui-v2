@@ -9,6 +9,8 @@ export interface LegacyFilesTableProps {
   filtros: Record<string, string>;
   mascara: Record<string, string>;
   setCantArchivos: React.Dispatch<React.SetStateAction<number>>;
+  setArchivos: React.Dispatch<React.SetStateAction<any[]>>;
+
   onChange: (file: string) => void;
 }
 
@@ -16,6 +18,7 @@ export const LegacyFilesTable = ({
   filtros,
   mascara,
   setCantArchivos,
+  setArchivos
 }: LegacyFilesTableProps) => {
   const { data, isLoading } = useLegacyFiles();
 
@@ -26,9 +29,16 @@ export const LegacyFilesTable = ({
   });
 
   // 👈 Actualizamos la cantidad de archivos solo cuando `files` cambian
-  useEffect(() => {
-    setCantArchivos(files.length);
-  }, [files, setCantArchivos]);
+useEffect(() => {
+  setCantArchivos(files.length);
+
+  setArchivos(prev => {
+    if (JSON.stringify(prev) === JSON.stringify(files)) {
+      return prev;
+    }
+    return files;
+  });
+}, [files,setCantArchivos]);
 
   const columns: ColumnsType<string> = [
     {
@@ -44,17 +54,15 @@ export const LegacyFilesTable = ({
   }
 
   return (
-
-      <Table<string>
-        locale={{
-          emptyText: <Empty description="No hay archivos disponibles"></Empty>,
-        }}
-        size="small"
-        rowKey={(record) => record}
-        dataSource={files}
-        columns={columns}
-        pagination={false}
-      />
-    
+    <Table<string>
+      locale={{
+        emptyText: <Empty description="No hay archivos disponibles"></Empty>,
+      }}
+      size="small"
+      rowKey={(record) => record}
+      dataSource={files}
+      columns={columns}
+      pagination={false}
+    />
   );
 };

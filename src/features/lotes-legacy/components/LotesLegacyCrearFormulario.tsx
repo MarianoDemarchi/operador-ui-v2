@@ -19,6 +19,8 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
   const [mascaras, setMascaras] = useState<Record<string, string>>({});
   const [cantArchivos, setCantArchivos] = useState<any>(0);
 
+  const [archivos, setArchivos] = useState<any[]>([]);
+
   const { mutateAsync: crearLote, isPending } = useCreateLoteLegacy();
 
   const { data: organizaciones = [], isLoading } = useClientesQuery();
@@ -63,7 +65,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       etiquetas: Object.fromEntries(
         Object.entries(values.etiquetas || {}).map(([k, v]: any) => [
           k,
-          dayjs.isDayjs(v) ? v.format("YYYY-MM-DD") : v,
+          dayjs.isDayjs(v) ? v.format("DD-MM-YYYY") : v,
         ]),
       ),
     };
@@ -73,17 +75,19 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       etiquetas: parsed.etiquetas,
       recepcion: parsed.recepcion,
       id_servicio: values.servicio,
-      diaEtiqueta: parsed.etiquetas.Dia,
+      diaEtiqueta: parsed.etiquetas.recepcion,
       base: organizacion.base,
       id_cliente: values.organizacion,
       cod_cliente: organizacion.codigo,
       cod_servicio: servicio.codigo,
       canal: values.canal.charAt(0),
-      archiv: [],
+      archiv: archivos,
       archivoAdjunto: [],
       mascara: buildMascara(mascaras), // 👈 FIX ACA
       nombre: "",
     };
+
+    console.log(data);
 
     await crearLote(data);
 
@@ -195,6 +199,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           label={`Archivos disponibles (${cantArchivos})`}
         >
           <LegacyFilesTable
+            setArchivos={setArchivos}
             tipo="ListarArchivos"
             filtros={etiquetas}
             setCantArchivos={setCantArchivos}
