@@ -51,7 +51,6 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
     cantArchivos > 0;
 
   const canSubmit = camposRequeridosCompletos;
-  console.log("archivosarchivosarchivosarchivos",archivos)
   const onFinish = async (values: any) => {
     const payload = {
       fechaImpresion: values.fechaEmision
@@ -62,10 +61,9 @@ export const EmisionFormCrear: React.FC<Props> = ({ onCancel }) => {
       archivos: archivos.map((a) =>
         servicio === "FAC"
           ? { archivoP: a.nombreArchivo, logId: a.logId }
-          : { logId: a.nombreArchivo },
+          : { logId: a.proceso },
       ),
     };
-
     try {
       message.info(
         "Este proceso puede demorar algunos minutos. No es necesario que esperes: podés cerrar el formulario y recibirás un mensaje al finalizar.",

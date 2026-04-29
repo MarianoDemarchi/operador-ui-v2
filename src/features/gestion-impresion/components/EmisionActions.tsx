@@ -1,7 +1,6 @@
 import { Button, Input, Popconfirm, Space } from "antd";
 import {
   SendOutlined,
-
   DeleteOutlined,
   CloudUploadOutlined,
   FileSearchOutlined,
@@ -57,6 +56,22 @@ export const EmisionActions: React.FC<Props> = ({
   const [openConfirm, setOpenConfirm] = useState<ConfirmType>(null);
   const [confirmText, setConfirmText] = useState("");
 
+  const handleConfirm = async () => {
+    try {
+     await onMovimiento();
+      setOpenConfirm(null);
+    } catch {}
+  };
+
+  const handleEliminarConfirm = async () => {
+    if (confirmText !== "eliminar") return;
+
+    try {
+      onEliminar();
+      setOpenConfirm(null);
+      setConfirmText("");
+    } catch {}
+  };
   return (
     <div style={{ width: 200 }}>
       <Space direction="vertical" style={{ width: "100%" }}>
@@ -76,7 +91,7 @@ export const EmisionActions: React.FC<Props> = ({
           title="Subir Archivos"
           description="Estas seguro que quieres subir los archivos?"
           open={openConfirm === "upload"}
-          onConfirm={onMovimiento}
+          onConfirm={handleConfirm}
           onCancel={() => setOpenConfirm(null)}
           okText="Subir"
           cancelText="Cancelar"
@@ -155,7 +170,7 @@ export const EmisionActions: React.FC<Props> = ({
             </>
           }
           open={openConfirm === "eliminar"}
-          onConfirm={onEliminar}
+          onConfirm={handleEliminarConfirm} // 👈 usar wrapper
           onCancel={() => {
             setOpenConfirm(null);
             setConfirmText("");

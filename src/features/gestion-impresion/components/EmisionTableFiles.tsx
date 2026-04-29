@@ -1,11 +1,12 @@
 import { Divider, Empty, Table, Typography } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEmisionFile } from "../hooks/useEmisionDynamicFields";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 interface ArchivoInfo {
   nombreArchivo?: string;
   logId?: string;
+  proceso?: string;
 }
 
 export interface EmisionTableCrear {
@@ -20,12 +21,27 @@ export const EmisionTableFiles: React.FC<EmisionTableCrear> = ({
   servicio,
   setCantArchivos,
   onFilesChange,
-  
 }) => {
   const { data, isLoading } = useEmisionFile({ servicio, distribuidora });
 
   /* =========================
-     Tabla principal (1 fila)
+     Normalización de datos
+  ========================== */
+  const archivosNormalizados: ArchivoInfo[] = useMemo(() => {
+    if (!data) return [];
+
+    if (servicio === "FAC") {
+      return data.archivos;
+    }
+
+    // 🔹 convertir string[] → ArchivoInfo[]
+    return (data.archivosRaw ?? []).map((nombre) => ({
+      proceso: `${nombre}`,
+    }));
+  }, [data, servicio]);
+
+  /* =========================
+     Tabla principal
   ========================== */
   const columns: ColumnsType<ArchivoInfo> = [
     {
@@ -40,13 +56,18 @@ export const EmisionTableFiles: React.FC<EmisionTableCrear> = ({
     },
     {
       title: "Proceso",
+      dataIndex: "proceso",
+
       key: "proceso",
-      render: (_, record) => record.nombreArchivo?.slice(22, 28) ?? "-",
+      render: (_, record) =>
+        record.nombreArchivo?.slice(22, 28)
+          ? record.nombreArchivo?.slice(22, 28)
+          : (record.proceso ?? "-"),
     },
   ];
 
   /* =========================
-     Tabla de archivos extra
+     Tabla auxiliar
   ========================== */
   const columnsListaArchivoAux: ColumnsType<string> = [
     {
@@ -59,8 +80,8 @@ export const EmisionTableFiles: React.FC<EmisionTableCrear> = ({
 
   useEffect(() => {
     setCantArchivos(data?.listaArchivos?.length ?? 0);
-    onFilesChange(data?.archivos ?? []);
-  }, [data?.archivos, setCantArchivos]);
+    onFilesChange(archivosNormalizados);
+  }, [data, archivosNormalizados, setCantArchivos, onFilesChange]);
 
   if (isLoading) {
     return <Typography.Text>Cargando...</Typography.Text>;
@@ -72,7 +93,7 @@ export const EmisionTableFiles: React.FC<EmisionTableCrear> = ({
         <Table<ArchivoInfo>
           size="small"
           rowKey={(r, i) => r.logId ?? `${i}`}
-          dataSource={data?.archivos ?? []}
+          dataSource={archivosNormalizados}
           columns={columns}
           pagination={false}
         />
