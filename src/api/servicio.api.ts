@@ -5,7 +5,7 @@ import apiClients from "./client/client";
 export const ServiciosApi = {
   getByBase: (base: string) =>
     // apiClients.client2.get("/operadord-v2/servicios", {
-    apiClients.client.get("/operador-api/servicios", {
+    apiClients.client.get("/operadorp/servicios", {
       params: { base },
     }),
 
