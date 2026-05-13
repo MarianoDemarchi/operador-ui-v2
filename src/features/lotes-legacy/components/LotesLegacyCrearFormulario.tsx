@@ -21,7 +21,6 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
 
   const [archivos, setArchivos] = useState<any[]>([]);
   const [archivosAdjuntos, setArchivosAdjuntos] = useState<any[]>([]);
-  const [cantAdjuntos, setCantAdjuntos] = useState(0);
   const { mutateAsync: crearLote, isPending } = useCreateLoteLegacy();
 
   const { data: organizaciones = [], isLoading } = useClientesQuery();
@@ -202,7 +201,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <LegacyFilesTable
             setArchivos={setArchivos}
             setArchivosAdjuntos={setArchivosAdjuntos}
-            setCantAdjuntos={setCantAdjuntos}
+            
             tipo="ListarArchivos"
             filtros={etiquetas}
             setCantArchivos={setCantArchivos}

@@ -12,7 +12,6 @@ export interface LegacyFilesTableProps {
   setCantArchivos: React.Dispatch<React.SetStateAction<number>>;
   setArchivos: React.Dispatch<React.SetStateAction<any[]>>;
   setArchivosAdjuntos: React.Dispatch<React.SetStateAction<any[]>>;
-  setCantAdjuntos: React.Dispatch<React.SetStateAction<number>>;
 
   onChange: (file: string) => void;
 }
@@ -23,7 +22,6 @@ export const LegacyFilesTable = ({
   setCantArchivos,
   setArchivos,
   setArchivosAdjuntos,
-  setCantAdjuntos,
 }: LegacyFilesTableProps) => {
   const { data, isLoading } = useLegacyFiles();
 
@@ -50,8 +48,6 @@ export const LegacyFilesTable = ({
   }, [files]);
 
   useEffect(() => {
-    setCantAdjuntos(adjuntos.length);
-
     setArchivosAdjuntos((prev) => {
       if (JSON.stringify(prev) === JSON.stringify(adjuntos)) {
         return prev;
@@ -63,7 +59,7 @@ export const LegacyFilesTable = ({
 
   const columns: ColumnsType<string> = [
     {
-      title: "Archivo",
+      title: `Archivos`,
       dataIndex: "",
       key: "archivo",
       render: (value: string) => <Typography.Text>{value}</Typography.Text>,
@@ -72,7 +68,7 @@ export const LegacyFilesTable = ({
 
   const columnsAdjunto: ColumnsType<string> = [
     {
-      title: "Archivo Adjunto",
+      title: `Archivo Adjunto (${adjuntos?.length})`,
       dataIndex: "",
       key: "archivo adjunto",
       render: (value: string) => <Typography.Text>{value}</Typography.Text>,
@@ -84,20 +80,7 @@ export const LegacyFilesTable = ({
 
   return (
     <>
-      {/* ADJUNTOS */}
-      {adjuntos?.length > 0 && (
-        <Table<string>
-          locale={{
-            emptyText: <Empty description="No hay adjuntos disponibles" />,
-          }}
-          size="small"
-          rowKey={(record) => `adj-${record}`}
-          dataSource={adjuntos}
-          columns={columnsAdjunto}
-          pagination={false}
-        />
-      )}
-      <Divider />
+
 
       {/* ARCHIVOS */}
       <Table<string>
@@ -110,6 +93,20 @@ export const LegacyFilesTable = ({
         columns={columns}
         pagination={false}
       />
+      <Divider />
+
+            {adjuntos?.length > 0 && (
+        <Table<string>
+          locale={{
+            emptyText: <Empty description="No hay adjuntos disponibles" />,
+          }}
+          size="small"
+          rowKey={(record) => `adj-${record}`}
+          dataSource={adjuntos}
+          columns={columnsAdjunto}
+          pagination={false}
+        />
+      )}
     </>
   );
 };
