@@ -20,7 +20,8 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
   const [cantArchivos, setCantArchivos] = useState<any>(0);
 
   const [archivos, setArchivos] = useState<any[]>([]);
-
+  const [archivosAdjuntos, setArchivosAdjuntos] = useState<any[]>([]);
+  const [cantAdjuntos, setCantAdjuntos] = useState(0);
   const { mutateAsync: crearLote, isPending } = useCreateLoteLegacy();
 
   const { data: organizaciones = [], isLoading } = useClientesQuery();
@@ -82,7 +83,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       cod_servicio: servicio.codigo,
       canal: values.canal.charAt(0),
       archiv: archivos,
-      archivoAdjunto: [],
+      archivoAdjunto: archivosAdjuntos, // 👈 FIX
       mascara: buildMascara(mascaras), // 👈 FIX ACA
       nombre: "",
     };
@@ -200,12 +201,15 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
         >
           <LegacyFilesTable
             setArchivos={setArchivos}
+            setArchivosAdjuntos={setArchivosAdjuntos}
+            setCantAdjuntos={setCantAdjuntos}
             tipo="ListarArchivos"
             filtros={etiquetas}
             setCantArchivos={setCantArchivos}
             mascara={mascaraMemo}
             onChange={(file) => {
               const current = form.getFieldValue("archivos") ?? [];
+
               if (!current.includes(file)) {
                 form.setFieldValue("archivos", [...current, file]);
               }

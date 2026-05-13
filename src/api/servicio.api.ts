@@ -17,3 +17,20 @@ export const ServiciosApi = {
         `&activo=${payload.activo}`,
     ),
 };
+
+
+export const ServiciosApiGestion = {
+  getByBase: (base: string) =>
+     apiClients.client.get("/operador-api/servicios", {
+   // apiClients.client.get("/operadorp/servicios", {
+      params: { base },
+    }),
+
+  toggle: (payload: { id_servicio: number; activo: number; base: string }) =>
+    apiClients.client.put(
+      `operador-api/gestion-servicios` +
+        `?id_servicio=${payload.id_servicio}` +
+        `&db=${payload.base}` +
+        `&activo=${payload.activo}`,
+    ),
+};

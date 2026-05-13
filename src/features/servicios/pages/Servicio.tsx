@@ -2,10 +2,10 @@ import { useState } from "react";
 import QueryErrorResult from "../../feedback/QueryErrorResult";
 import { ServiciosHeader } from "../components/ServiciosHeader";
 import { ServicioTable } from "../components/ServiciosTable";
-import { useServiciosQuery } from "../hooks/useServiciosQuery";
 import type { Cliente } from "../models/cliente.model";
 import { Space, Card, Skeleton } from "antd";
 import { ClienteSelect } from "../components/ServiciosClienteSelect";
+import { useServiciosQueryGestion } from "../hooks/useServicioQueryGestion";
 
 export const ListaServicios: React.FC = () => {
   const [cliente, setCliente] = useState<Cliente | undefined>();
@@ -19,7 +19,7 @@ export const ListaServicios: React.FC = () => {
     toggleServicio,
 
     refetch,
-  } = useServiciosQuery(cliente?.base);
+  } = useServiciosQueryGestion(cliente?.base);
 
   if (isError ) {
     return <QueryErrorResult error={error} onRetry={refetch} />;

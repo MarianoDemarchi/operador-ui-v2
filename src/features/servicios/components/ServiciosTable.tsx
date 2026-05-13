@@ -30,9 +30,9 @@ export const ServicioTable: React.FC<Props> = ({
         <Tag
           variant="outlined"
           style={{ fontSize: "14px" }}
-          color={s.estado === 0 ? "green" : "red"}
+          color={s.estado !== 0 ? "green" : "red"}
         >
-          {s.estado === 0 ? "Activo" : "Inactivo"}
+          {s.estado !== 0 ? "Activo" : "Inactivo"}
         </Tag>
       ),
     },

@@ -14,7 +14,7 @@ export const ServiciosToogleButton: React.FC<Props> = ({
 }) => {
   const { token } = theme.useToken();
 
-  const isActive = servicio.estado === 0;
+  const isActive = servicio.estado !== 0;
 
   const showConfirm = (checked: boolean) => {
     Modal.confirm({
