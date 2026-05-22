@@ -45,16 +45,16 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     );
 
   const canSubmit = camposRequeridosCompletos;
+  const buildMascara = (mascaras?: Record<string, string>) => {
+    if (!mascaras || Object.keys(mascaras).length === 0) {
+      return "***";
+    }
 
-  const buildMascara = (mascaras: Record<string, string>) => {
-    const orden = Object.keys(mascaras); // o venir del backend
-
+    const orden = Object.keys(mascaras);
     const valores = orden
       .map((key) => mascaras[key])
       .filter((v) => v !== undefined && v !== null && v !== "");
-
-    if (!valores.length) return "";
-
+    if (!valores.length) return "***";
     return `*${valores.join("*")}*`;
   };
 
@@ -104,6 +104,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       Servicios: JSON.stringify(servicio),
       ...mascaras,
     }),
+
     [form.getFieldValue("canal"), organizacion?.id, servicio?.id, mascaras],
   );
 
@@ -172,6 +173,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
             servicioId={servicio.id}
             base={organizacion.base}
             onChange={(values, masks) => {
+              console.log("ESTASSSSSSSSSSSSSSSSSS", masks);
               form.setFieldValue("etiquetas", values);
               setMascaras(masks);
             }}
@@ -201,7 +203,6 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <LegacyFilesTable
             setArchivos={setArchivos}
             setArchivosAdjuntos={setArchivosAdjuntos}
-            
             tipo="ListarArchivos"
             filtros={etiquetas}
             setCantArchivos={setCantArchivos}
