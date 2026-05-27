@@ -71,7 +71,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     };
 
     const data = {
-      version: "v2",
+      version: "",
       etiquetas: parsed.etiquetas,
       recepcion: parsed.recepcion,
       id_servicio: values.servicio,
