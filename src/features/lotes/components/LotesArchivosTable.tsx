@@ -42,6 +42,7 @@ export const LoteArchivosTable: React.FC<{ archivos: Archivo[] }> = ({
           },
           {
             title: "Registros",
+            align:"center",
             dataIndex: "Registros",
             render: (v) => v ?? "-",
           },

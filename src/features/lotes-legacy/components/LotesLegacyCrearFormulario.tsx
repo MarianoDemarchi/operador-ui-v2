@@ -45,17 +45,20 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     );
 
   const canSubmit = camposRequeridosCompletos;
-  const buildMascara = (mascaras?: Record<string, string>) => {
+  const buildMascara = (mascaras?: Record<string, string>, servicio?: any) => {
     if (!mascaras || Object.keys(mascaras).length === 0) {
       return "***";
     }
 
-    const orden = Object.keys(mascaras);
-    const valores = orden
-      .map((key) => mascaras[key])
-      .filter((v) => v !== undefined && v !== null && v !== "");
-    if (!valores.length) return "***";
-    return `*${valores.join("*")}*`;
+    const valores = Object.values(mascaras).filter(Boolean);
+
+    const mascaraPrincipal = `*${valores.join("*")}*`;
+
+    if (servicio?.codigo === "FDENSU") {
+      return `${mascaraPrincipal};*legajo*`;
+    }
+
+    return mascaraPrincipal;
   };
 
   const onFinish = async (values: any) => {
@@ -83,7 +86,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       canal: values.canal.charAt(0),
       archiv: archivos,
       archivoAdjunto: archivosAdjuntos, // 👈 FIX
-      mascara: buildMascara(mascaras), // 👈 FIX ACA
+      mascara: buildMascara(mascaras, servicio),
       nombre: "",
     };
 
@@ -155,7 +158,11 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           loading={loadingServicios}
           placeholder="Seleccione servicio"
           options={servicios.map((srv) => ({
-            label: srv.nombre,
+            label: (
+              <>
+                {srv.nombre} (<strong>{srv.codigo}</strong>)
+              </>
+            ),
             value: srv.id,
             data: srv,
           }))}
@@ -173,7 +180,6 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
             servicioId={servicio.id}
             base={organizacion.base}
             onChange={(values, masks) => {
-              console.log("ESTASSSSSSSSSSSSSSSSSS", masks);
               form.setFieldValue("etiquetas", values);
               setMascaras(masks);
             }}

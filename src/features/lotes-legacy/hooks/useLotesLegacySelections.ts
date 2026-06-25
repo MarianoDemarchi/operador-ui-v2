@@ -10,8 +10,13 @@ export const useLotesSelection = () => {
     );
   };
 
+  const clearSelection = () => {
+    setSelected([]);
+  };
+
   const state = useMemo(() => {
     const lote = selected[0];
+
     if (!lote) {
       return {
         canEnviar: false,
@@ -34,7 +39,9 @@ export const useLotesSelection = () => {
 
   return {
     selected,
+    setSelected, // opcional
     toggle,
+    clearSelection, // <-- agregado
     ...state,
   };
 };

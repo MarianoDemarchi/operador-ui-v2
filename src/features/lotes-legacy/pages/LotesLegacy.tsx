@@ -18,7 +18,6 @@ export const ListaLotesLegacy = () => {
 
   const selected = selection.selected[0];
 
-
   return (
     <div style={{ width: "100%", padding: "16px" }}>
       <LotesLegacyHeader isFetching={isFetching} onReload={refetch} />
@@ -32,7 +31,7 @@ export const ListaLotesLegacy = () => {
         ) : (
           <>
             <Col
-            style={{margin:0}}
+              style={{ margin: 0 }}
               xs={24} // móvil: ocupa toda la fila
               md={22} // tablet/desktop: 2/3 del ancho
             >
@@ -54,6 +53,7 @@ export const ListaLotesLegacy = () => {
               }}
             >
               <LotesLegacyActions
+                clearSelection={selection.clearSelection}
                 setOpenCreateDrawer={setOpenCreateDrawer}
                 setOpenUploadDrawer={setOpenUploadDrawer}
                 canEnviar={selection.canEnviar}

@@ -8,6 +8,7 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
+import type { LoteLegacy } from "../models/lote-legacy.model";
 
 type ConfirmType = "eliminar" | "enviar" | null;
 
@@ -15,11 +16,13 @@ interface Props {
   canEnviar: boolean;
   canCancelar: boolean;
   canSumarizar: boolean;
+  selection?: LoteLegacy;
 
   onEnviar(): void;
   onCancelar(): void;
   onSumarizar(): void;
   onControl(): void;
+  clearSelection: () => void;
 
   setOpenCreateDrawer: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenUploadDrawer: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +38,7 @@ export const LotesLegacyActions: React.FC<Props> = ({
   onControl,
   setOpenCreateDrawer,
   setOpenUploadDrawer,
+  clearSelection,
 }) => {
   const [openConfirm, setOpenConfirm] = useState<ConfirmType>(null);
   const [confirmText, setConfirmText] = useState("");
@@ -43,6 +47,7 @@ export const LotesLegacyActions: React.FC<Props> = ({
     onCancelar();
     setOpenConfirm(null);
     setConfirmText("");
+    clearSelection();
   };
 
   const handlEnviar = () => {
@@ -162,7 +167,6 @@ export const LotesLegacyActions: React.FC<Props> = ({
           type="primary"
           icon={<ControlOutlined />}
           style={{ justifyContent: "flex-start" }}
-          disabled={!canEnviar}
           onClick={onControl}
         >
           Control
