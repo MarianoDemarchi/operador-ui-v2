@@ -39,7 +39,7 @@ export const TareaTable: React.FC<{
         pagination={false}
         loading={isFetching}
         columns={tareaColumns}
-        dataSource={data.filter((e) => e.accion_pendiente !== "CSV_Entrega_AD")}
+        dataSource={data?.filter((e) => e?.accion_pendiente !== "CSV_Entrega_AD")}
         onRow={(record) => ({
           onClick: () => toggleRowSelection(record), // clic sobre fila
           style: {
