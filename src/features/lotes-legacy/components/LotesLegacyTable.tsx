@@ -113,7 +113,7 @@ export const LotesLegacyTable: React.FC<Props> = ({
         columns={columns}
         dataSource={data?.filter(
     (e) =>
-      !(e.l_nombre?.includes("FD") && !e.l_nombre?.includes("REENVIO"))
+      !(e.descripcion?.includes("Factura Digital Comunes ") && !e.l_nombre?.includes("REENVIO"))
   )}
         expandable={{
           expandedRowRender: (row) => <LotesRowExpand lote={row} />,
