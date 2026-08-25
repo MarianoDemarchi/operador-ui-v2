@@ -111,10 +111,7 @@ export const LotesLegacyTable: React.FC<Props> = ({
         scroll={{ y: !showLogs ? 700 : 400, x: "hidden" }}
         rowKey="id_lote"
         columns={columns}
-        dataSource={data?.filter(
-    (e) =>
-      !(e.descripcion?.includes("Factura Digital Comunes ") && !e.l_nombre?.includes("REENVIO"))
-  )}
+        dataSource={data}
         expandable={{
           expandedRowRender: (row) => <LotesRowExpand lote={row} />,
           rowExpandable: (row) => row.estado !== "Enviado OK",

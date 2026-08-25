@@ -15,8 +15,6 @@ export const TareaTable: React.FC<{
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
-
-
   const toggleRowSelection = (record: Tarea) => {
     if (record.tiempo_excedido.charAt(0) === "-") return; // solo seleccionables
     onSelect(record);
@@ -39,7 +37,11 @@ export const TareaTable: React.FC<{
         pagination={false}
         loading={isFetching}
         columns={tareaColumns}
-        dataSource={data?.filter((e) => e?.accion_pendiente !== "CSV_Entrega_AD")}
+        dataSource={
+          Array.isArray(data)
+            ? data.filter((e) => e?.accion_pendiente !== "CSV_Entrega_AD")
+            : []
+        }
         onRow={(record) => ({
           onClick: () => toggleRowSelection(record), // clic sobre fila
           style: {
