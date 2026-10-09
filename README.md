@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# Mando Operador · operador-ui
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend de operación de Mando para gestionar envíos digitales, emisiones de papel, tareas, servicios y monitoreo. Es una SPA en React y TypeScript; los procesos y datos de negocio viven en servicios externos. Este repositorio no contiene el backend.
 
-Currently, two official plugins are available:
+## Empezar
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Requisitos: npm y una versión de Node compatible con Vite instalado. El Vite del lockfile actual requiere Node `20.19+` en la rama 20 o `22.12+` en las ramas posteriores.
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm ci
+cp .env.example .env.local
+# Completar las URLs con los valores del entorno autorizado.
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Si ya existe configuración local, conservarla. Vite muestra la URL y el puerto disponibles al arrancar. El login necesita acceso al Cognito configurado y las pantallas necesitan conectividad a sus APIs. No hay modo offline ni servidor mock configurados.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | Desarrollo con Vite y recarga de cambios |
+| `npm run build` | Chequeo TypeScript (`tsc -b`) y compilación a `dist/` |
+| `npm run preview` | Vista local del build; no es un servidor de producción |
+| `npm run lint` | ESLint sobre el proyecto |
+| `git diff --check` | Detectar errores de whitespace en el diff |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+No hay script de tests ni suite de pruebas configurada. Para un cambio funcional, combinar build, lint y una comprobación manual del flujo afectado. Distinguir los fallos existentes de los introducidos por el cambio.
+
+## Documentación
+
+- [Guía para agentes](AGENTS.md): dónde empezar y cómo trabajar en este repositorio.
+- [Arquitectura](docs/arquitectura.md): arranque, módulos, rutas, autenticación, estado y limitaciones actuales.
+- [APIs y configuración](docs/apis.md): clientes HTTP, variables y operaciones por dominio.
+- [Lotes legacy y muestras](docs/lotes-legacy.md): formulario compartido, archivos, payloads y verificaciones.
+- [Guía de desarrollo](docs/desarrollo.md): cómo implementar cambios y comprobarlos.
+
+La documentación describe el código observado el 9 de octubre de 2026. Los endpoints documentados son los que consume el frontend; no sustituyen un contrato del backend ni confirman su disponibilidad.
+
+## Stack y estructura
+
+React 19, TypeScript 5.9, Vite, React Router 7, Ant Design 6, TanStack React Query 5, Axios y AWS Amplify/Cognito. Consultar `package.json` para rangos y `package-lock.json` para versiones resueltas.
+
+```text
+src/
+  app/          Arranque, configuración Amplify y App
+  api/          Adaptadores HTTP por dominio y clientes Axios
+  auth/         Utilidades de sesión y permisos
+  context/      Estado compartido de interfaz
+  routes/       Login, protección de sesión y rutas del dashboard
+  layout/       Layout, menú, sidebar y header
+  features/     Páginas, componentes, hooks y modelos por funcionalidad
+  theme/        Tema de Ant Design
+  assets/       Logos e imágenes
+  types/        Declaraciones adicionales de tipos
 ```
+
+La interfaz y los textos de negocio están en español. Hay módulos con nombres históricos y directorios `page/` y `pages/`; seguir la estructura real del módulo al editarlo.
+
+## Configuración y despliegue
+
+Las URLs HTTP se inyectan con variables `VITE_*`; ver [.env.example](.env.example) y [APIs](docs/apis.md). Vite las incorpora al bundle, por lo que no deben contener secretos. Cognito se configura en `src/app/config.tsx` y se inicializa en `src/app/amplify.ts`.
+
+El build genera `dist/`. El hosting debe servir `index.html` como fallback para rutas de la SPA, por ejemplo `/lotes`, y permitir acceso a las APIs y a Cognito. No hay pipeline de despliegue definido en los archivos revisados. Vite separa chunks `antd`, `query` y `vendor`; pueden aparecer avisos por el tamaño de los bundles.

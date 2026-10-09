@@ -25,3 +25,19 @@ export const useCreateLoteLegacy = () => {
     onError: () => actionFeedback.error("crear"),
   });
 };
+export const useCreateLoteLegacyMuestra = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CrearLotePayload) =>
+      LotesLegacyApi.crearMuestra(buildFormData(payload)),
+
+    onMutate: () => actionFeedback.loading("crear"),
+
+    onSuccess: () => {
+      actionFeedback.success("crear");
+      queryClient.invalidateQueries({ queryKey: ["lotes-legacy"] });
+    },
+
+    onError: () => actionFeedback.error("crear"),
+  });
+};

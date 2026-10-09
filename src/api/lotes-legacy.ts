@@ -18,6 +18,14 @@ export const LotesLegacyApi = {
     ApiClient.client3.post("/CrearLote", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     }),
+
+
+  crearMuestra: (formData: FormData) =>
+    ApiClient.client3.post("/CrearMuestra", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    }),
+
+
   enviar: (formData: FormData) =>
     ApiClient.client3.post("/EnvioLote", formData, {
       headers: { "Content-Type": "multipart/form-data" },

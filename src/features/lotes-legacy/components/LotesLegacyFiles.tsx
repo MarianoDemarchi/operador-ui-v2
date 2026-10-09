@@ -5,7 +5,6 @@ import { useFilteredLegacyFiles } from "../hooks/useFilteredLegacyFiles";
 import { useEffect } from "react";
 
 export interface LegacyFilesTableProps {
-  tipo: string;
   filtros: Record<string, string>;
   mascara: Record<string, string>;
 

@@ -1,7 +1,10 @@
 import { Form, Select, DatePicker, Button, Space, Divider, Radio } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo, useState } from "react";
-import { useCreateLoteLegacy } from "../hooks/useCreateLoteLegacy";
+import {
+  useCreateLoteLegacy,
+  useCreateLoteLegacyMuestra,
+} from "../hooks/useCreateLoteLegacy";
 import { useClientesQuery } from "../../servicios/hooks/useClienteQuery";
 import { useServiciosQuery } from "../../servicios/hooks/useServiciosQuery";
 import { DynamicFields } from "./LotesLegacyComponentDynamic";
@@ -22,6 +25,9 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
   const [archivos, setArchivos] = useState<any[]>([]);
   const [archivosAdjuntos, setArchivosAdjuntos] = useState<any[]>([]);
   const { mutateAsync: crearLote, isPending } = useCreateLoteLegacy();
+  const { mutateAsync: crearMuestra, isPending: isPendingMuestra } =
+    useCreateLoteLegacyMuestra();
+  const isCreating = isPending || isPendingMuestra;
 
   const { data: organizaciones = [], isLoading } = useClientesQuery();
   const { data: servicios = [], isLoading: loadingServicios } =
@@ -33,6 +39,11 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
   const servicioSeleccionado = Form.useWatch("servicio", form);
   const etiquetasSeleccionadas = Form.useWatch("etiquetas", form);
   const recepcionSeleccionada = Form.useWatch("recepcion", form);
+  const puedeEnviarMuestra =
+    organizacion?.codigo === "ACSA" &&
+    organizacion?.id === organizacionSeleccionada &&
+    !!servicioSeleccionado &&
+    servicio?.id === servicioSeleccionado;
 
   const camposRequeridosCompletos =
     !!organizacionSeleccionada &&
@@ -61,7 +72,9 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     return mascaraPrincipal;
   };
 
-  const onFinish = async (values: any) => {
+  const onFinish = async (values: any, esMuestra = false) => {
+    if (esMuestra && !puedeEnviarMuestra) return;
+
     const parsed = {
       ...values,
       recepcion: values.recepcion?.subtract(3, "hour").format("YYYY-MM-DD"),
@@ -92,7 +105,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
 
     console.log(data);
 
-    await crearLote(data);
+    await (esMuestra ? crearMuestra(data) : crearLote(data));
 
     form.resetFields();
     setOrganizacion(null);
@@ -131,7 +144,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
         etiquetas: { Dia: dayjs() },
         archivos: [],
       }}
-      onFinish={onFinish}
+      onFinish={(values) => onFinish(values)}
     >
       {/* Organización */}
       <Form.Item
@@ -209,7 +222,6 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <LegacyFilesTable
             setArchivos={setArchivos}
             setArchivosAdjuntos={setArchivosAdjuntos}
-            tipo="ListarArchivos"
             filtros={etiquetas}
             setCantArchivos={setCantArchivos}
             mascara={mascaraMemo}
@@ -237,6 +249,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
       >
         <Space style={{ width: "100%", justifyContent: "flex-end" }}>
           <Button
+            disabled={isCreating}
             onClick={() => {
               form.resetFields();
               setOrganizacion(null);
@@ -247,13 +260,31 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
             Cancelar
           </Button>
 
+          {puedeEnviarMuestra && (
+            <Button
+              htmlType="button"
+              disabled={!canSubmit || isCreating}
+              loading={isPendingMuestra}
+              onClick={async () => {
+                try {
+                  const values = await form.validateFields();
+                  await onFinish(values, true);
+                } catch {
+                  // La validación y la mutación muestran sus propios errores.
+                }
+              }}
+            >
+              Enviar muestra
+            </Button>
+          )}
+
           <Button
             type="primary"
             htmlType="submit"
-            disabled={!canSubmit}
+            disabled={!canSubmit || isCreating}
             loading={isPending}
           >
-            Crear lote
+            Crear / enviar lote
           </Button>
         </Space>
       </div>
