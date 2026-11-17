@@ -27,7 +27,7 @@ Las rutas y métodos siguientes proceden del frontend. Los query params se resum
 | `servicio.api.ts` | `client` | GET `/operadorp/servicios?base=…`; gestión: GET `/operador-api/servicios?base=…`; PUT `/operador-api/gestion-servicios` con `id_servicio`, `db`, `activo` |
 | `lotes.api.ts` | `client` | GET `/operador-api/lotes?estado=todos` |
 | `lotes-legacy.ts` | `client` | GET `/operadorp/lotes?estado=todos`, `/operadorp/campos?base=…&servicio=…`, `/operadorp/control?cliente=…&lote=…`, `/operadorp/sumariza?base=…&lote=…` |
-| `lotes-legacy.ts` | `client3` | POST `/CrearLote`, `/CrearMuestra`, `/EnvioLote`, `/CancelaLote`, `/DetenerLote` |
+| `lotes-legacy.ts` | `client3` | POST `/CrearLote`, `/SendTestEmail`, `/EnvioLote`, `/CancelaLote`, `/DetenerLote` |
 | `legacy-files.api.ts` | `client3` | GET `/ListarArchivos`, `/ListarArchivosDescarga` |
 | `tareas.api.ts` | `client` / `client3` | GET `/operadorp/lotes?estado=acciones_v2`; POST `/Reenvio` |
 | `logs.api.ts` | `client` | GET `/operadorp/logs` con `timelog` y `estado=todos` |
@@ -47,7 +47,7 @@ const formData = new FormData();
 formData.append("file", JSON.stringify(payload));
 ```
 
-Los nombres exactos importan: `archiv`, `archivoAdjunto`, `id_servicio`, `base`, etc. No convertirlos a camelCase ni sustituir multipart por JSON sin confirmar el contrato. La lista compartida espera `{ listaArchivos: string[], listaAdjuntos: string[] }`. El botón Enviar muestra utiliza `/CrearMuestra` con los archivos de esa lista.
+Los nombres exactos importan: `archiv`, `archivoAdjunto`, `id_servicio`, `base`, etc. No convertirlos a camelCase ni sustituir multipart por JSON sin confirmar el contrato. La lista compartida espera `{ listaArchivos: string[], listaAdjuntos: string[] }`. El botón Enviar muestra utiliza `/SendTestEmail` con los archivos de esa lista.
 
 ## Errores y permisos
 

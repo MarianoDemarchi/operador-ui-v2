@@ -129,7 +129,7 @@
 //   );
 // };
 
-import { Form, Select, Radio, DatePicker, AutoComplete } from "antd";
+import { Form, Select, Radio, DatePicker, AutoComplete, Input } from "antd";
 import { useEffect } from "react";
 import {
   useLegacyDynamicFields,
@@ -139,6 +139,7 @@ import {
 interface Props {
   servicioId: number;
   base: string;
+  codigoCliente?: string;
   onChange: (
     values: Record<string, any>,
     mascaras: Record<string, string>,
@@ -148,6 +149,7 @@ interface Props {
 export const DynamicFields: React.FC<Props> = ({
   servicioId,
   base,
+  codigoCliente,
   onChange,
 }) => {
   const { data, isLoading } = useLegacyDynamicFields({
@@ -211,6 +213,28 @@ export const DynamicFields: React.FC<Props> = ({
         }
 
         const namePath = ["etiquetas", field.nombre];
+        const esPeriodoAcsa = codigoCliente === "ACSA" &&
+          [field.nombre, field.nombre_largo].some((nombre) =>
+            /(^|[^a-z])periodo([^a-z]|$)/.test(
+              nombre.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase(),
+            ),
+          );
+        const normalizePeriodo = (value: unknown, previous: unknown) =>
+          esPeriodoAcsa && typeof value === "string" && value.includes("-")
+            ? previous
+            : value;
+        const reglas = [
+          { required: true, message: "Campo obligatorio" },
+          ...(esPeriodoAcsa ? [{
+            validator: (_: unknown, value: unknown) =>
+              typeof value === "string" && value.includes("-")
+                ? Promise.reject(new Error("El período debe usar /, no guiones."))
+                : Promise.resolve(),
+          }] : []),
+        ];
+        if (esPeriodoAcsa) {
+          posibles = posibles.filter((p: { valor: unknown }) => !String(p.valor).includes("-"));
+        }
 
         switch (field.control_html) {
           case "combobox":
@@ -219,12 +243,9 @@ export const DynamicFields: React.FC<Props> = ({
                 key={field.nombre}
                 label={field.nombre_largo}
                 name={namePath}
-                rules={[
-                  {
-                    required: true,
-                    message: "Campo obligatorio",
-                  },
-                ]}
+                rules={reglas}
+                normalize={normalizePeriodo}
+                extra={esPeriodoAcsa ? "Usá / como separador del período (ejemplo: 10/2026). No se permiten guiones." : undefined}
               >
                 <Select allowClear>
                   {posibles.map((p: any) => (
@@ -242,12 +263,9 @@ export const DynamicFields: React.FC<Props> = ({
                 key={field.nombre}
                 label={field.nombre_largo}
                 name={namePath}
-                rules={[
-                  {
-                    required: true,
-                    message: "Campo obligatorio",
-                  },
-                ]}
+                rules={reglas}
+                normalize={normalizePeriodo}
+                extra={esPeriodoAcsa ? "Usá / como separador del período (ejemplo: 10/2026). No se permiten guiones." : undefined}
               >
                 <Radio.Group>
                   {posibles.map((p: any) => (
@@ -265,14 +283,11 @@ export const DynamicFields: React.FC<Props> = ({
                 key={field.nombre}
                 label={field.nombre_largo}
                 name={namePath}
-                rules={[
-                  {
-                    required: true,
-                    message: "Campo obligatorio",
-                  },
-                ]}
+                rules={reglas}
+                normalize={normalizePeriodo}
+                extra={esPeriodoAcsa ? "Usá / como separador del período (ejemplo: 10/2026). No se permiten guiones." : undefined}
               >
-                <DatePicker style={{ width: "100%" }} />
+                <DatePicker format={esPeriodoAcsa ? "DD/MM/YYYY" : undefined} style={{ width: "100%" }} />
               </Form.Item>
             );
 
@@ -282,14 +297,29 @@ export const DynamicFields: React.FC<Props> = ({
                 key={field.nombre}
                 label={field.nombre_largo}
                 name={namePath}
-                rules={[
-                  {
-                    required: true,
-                    message: "Campo obligatorio",
-                  },
-                ]}
+                rules={reglas}
+                normalize={normalizePeriodo}
+                extra={esPeriodoAcsa ? "Usá / como separador del período (ejemplo: 10/2026). No se permiten guiones." : undefined}
               >
-                <AutoComplete
+                {esPeriodoAcsa ? (
+                  <Input
+                    allowClear
+                    placeholder="Ejemplo: 10/2026"
+                    onKeyDown={(event) => {
+                      if (event.key === "-") event.preventDefault();
+                    }}
+                    onBeforeInput={(event) => {
+                      if ((event.nativeEvent as InputEvent).data?.includes("-")) {
+                        event.preventDefault();
+                      }
+                    }}
+                    onPaste={(event) => {
+                      if (event.clipboardData.getData("text").includes("-")) {
+                        event.preventDefault();
+                      }
+                    }}
+                  />
+                ) : <AutoComplete
                   allowClear
                   options={posibles.map((p: any) => ({
                     value: p.valor,
@@ -300,7 +330,7 @@ export const DynamicFields: React.FC<Props> = ({
                       ?.toUpperCase()
                       ?.includes(inputValue.toUpperCase())
                   }
-                />
+                />}
               </Form.Item>
             );
 

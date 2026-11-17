@@ -1,6 +1,8 @@
-import { Form, Select, DatePicker, Button, Space, Divider, Radio } from "antd";
+import {
+  Form, Select, DatePicker, Button, Space, Divider, Radio, Input, Alert,
+} from "antd";
 import dayjs from "dayjs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   useCreateLoteLegacy,
   useCreateLoteLegacyMuestra,
@@ -16,6 +18,10 @@ interface Props {
 
 export const LoteForm: React.FC<Props> = ({ onCancel }) => {
   const [form] = Form.useForm();
+  const [muestraEnviada, setMuestraEnviada] = useState<string | null>(null);
+  const [confirmacion, setConfirmacion] = useState("");
+  const envioEnCurso = useRef(false);
+  const valoresActuales = Form.useWatch([], form);
 
   const [organizacion, setOrganizacion] = useState<any>(null);
   const [servicio, setServicio] = useState<any>(null);
@@ -72,45 +78,91 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     return mascaraPrincipal;
   };
 
-  const onFinish = async (values: any, esMuestra = false) => {
-    if (esMuestra && !puedeEnviarMuestra) return;
-
+  const buildPayload = (values: any) => {
     const parsed = {
       ...values,
       recepcion: values.recepcion?.subtract(3, "hour").format("YYYY-MM-DD"),
       etiquetas: Object.fromEntries(
-        Object.entries(values.etiquetas || {}).map(([k, v]: any) => [
-          k,
-          dayjs.isDayjs(v) ? v.format("DD-MM-YYYY") : v,
-        ]),
+        Object.entries(values.etiquetas || {}).map(([k, v]: any) => {
+          const esPeriodoAcsa =
+            organizacion?.codigo === "ACSA" &&
+            k.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === "periodo";
+          const valor = dayjs.isDayjs(v) ? v.format("DD-MM-YYYY") : v;
+          return [
+            k,
+            esPeriodoAcsa && typeof valor === "string"
+              ? valor.replaceAll("-", "/")
+              : valor,
+          ];
+        }),
       ),
     };
 
-    const data = {
-      version: "",
+    return {
+      version:
+        organizacion?.codigo === "ACSA" && window.location.hostname === "localhost"
+          ? "v3"
+          : "",
       etiquetas: parsed.etiquetas,
       recepcion: parsed.recepcion,
       id_servicio: values.servicio,
       diaEtiqueta: parsed.recepcion,
-      base: organizacion.base,
+      base: organizacion?.base,
       id_cliente: values.organizacion,
-      cod_cliente: organizacion.codigo,
-      cod_servicio: servicio.codigo,
-      canal: values.canal.charAt(0),
+      cod_cliente: organizacion?.codigo,
+      cod_servicio: servicio?.codigo,
+      canal: values.canal?.charAt(0),
       archiv: archivos,
       archivoAdjunto: archivosAdjuntos, // 👈 FIX
       mascara: buildMascara(mascaras, servicio),
       nombre: "",
     };
+  };
 
-    console.log(data);
+  const requiereMuestra = organizacion?.codigo === "ACSA";
+  const confirmacionEsperada = requiereMuestra
+    ? `enviar ${servicio?.codigo ?? ""}`
+    : "enviar";
+  const confirmacionValida =
+    confirmacion === confirmacionEsperada &&
+    (!requiereMuestra || !!servicio?.codigo);
+  const muestraVigente =
+    muestraEnviada !== null &&
+    muestraEnviada === JSON.stringify(buildPayload(valoresActuales ?? {}));
+  const puedeEnviarLote = canSubmit && (!requiereMuestra || muestraVigente);
 
-    await (esMuestra ? crearMuestra(data) : crearLote(data));
+  const onFinish = async (values: any, esMuestra = false) => {
+    if (envioEnCurso.current || !canSubmit) return;
+    const data = buildPayload(values);
+    if (esMuestra && !puedeEnviarMuestra) return;
+    if (
+      !esMuestra &&
+      (!confirmacionValida ||
+        (requiereMuestra && muestraEnviada !== JSON.stringify(data)))
+    ) return;
 
-    form.resetFields();
-    setOrganizacion(null);
-    setServicio(null);
-    onCancel();
+    envioEnCurso.current = true;
+    try {
+      if (esMuestra) {
+        setMuestraEnviada(null);
+        setConfirmacion("");
+        await crearMuestra({ ...data, version: "" });
+        setMuestraEnviada(JSON.stringify(data));
+        return;
+      }
+
+      await crearLote(data);
+      form.resetFields();
+      setOrganizacion(null);
+      setServicio(null);
+      setMuestraEnviada(null);
+      setConfirmacion("");
+      onCancel();
+    } catch {
+      // La mutación muestra el error; se conservan los datos para reintentar.
+    } finally {
+      envioEnCurso.current = false;
+    }
   };
 
   const mascaraMemo = useMemo(
@@ -138,6 +190,11 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
     <Form
       form={form}
       layout="vertical"
+      disabled={isCreating}
+      onValuesChange={() => {
+        setMuestraEnviada(null);
+        setConfirmacion("");
+      }}
       initialValues={{
         canal: "email",
         recepcion: dayjs(),
@@ -191,6 +248,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <DynamicFields
             key={`${organizacion.id}-${servicio.id}`}
             servicioId={servicio.id}
+            codigoCliente={organizacion.codigo}
             base={organizacion.base}
             onChange={(values, masks) => {
               form.setFieldValue("etiquetas", values);
@@ -247,6 +305,32 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           zIndex: 10,
         }}
       >
+        {requiereMuestra && (
+          <Alert
+            type={muestraVigente ? "success" : "info"}
+            showIcon
+            title={muestraVigente
+              ? "Muestra enviada correctamente. Ya podés confirmar el envío del lote."
+              : "Enviá la muestra con los datos actuales para habilitar el envío del lote."}
+            style={{ marginBottom: 12 }}
+          />
+        )}
+        <Form.Item
+          label="Confirmación del envío del lote"
+          extra={requiereMuestra
+            ? servicio?.codigo
+              ? <>Escribí exactamente: <strong>{confirmacionEsperada}</strong> (enviar, un espacio y el código del servicio).</>
+              : "Seleccioná un servicio para ver el texto de confirmación."
+            : "Escribí exactamente: enviar"}
+        >
+          <Input
+            value={confirmacion}
+            onChange={(event) => setConfirmacion(event.target.value)}
+            disabled={!puedeEnviarLote || isCreating}
+            placeholder={requiereMuestra ? "enviar CODIGO_SERVICIO" : "enviar"}
+            autoComplete="off"
+          />
+        </Form.Item>
         <Space style={{ width: "100%", justifyContent: "flex-end" }}>
           <Button
             disabled={isCreating}
@@ -254,6 +338,8 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
               form.resetFields();
               setOrganizacion(null);
               setServicio(null);
+              setMuestraEnviada(null);
+              setConfirmacion("");
               onCancel();
             }}
           >
@@ -281,7 +367,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
           <Button
             type="primary"
             htmlType="submit"
-            disabled={!canSubmit || isCreating}
+            disabled={!puedeEnviarLote || !confirmacionValida || isCreating}
             loading={isPending}
           >
             Crear / enviar lote

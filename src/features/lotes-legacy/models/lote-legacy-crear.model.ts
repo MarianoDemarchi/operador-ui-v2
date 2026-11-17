@@ -1,5 +1,5 @@
 export interface CrearLotePayload {
-//  version: string;
+  version: string;
   etiquetas: Record<string, string>;
   diaEtiqueta: string;
   mascara: string;

@@ -24,7 +24,7 @@ Aplica a todo el repositorio. Leer esta guía y la documentación del área ante
 - Revisar `git status` y conservar los cambios existentes del usuario.
 - Mantener textos de interfaz en español y componentes/hooks del dominio afectado.
 - Reutilizar formularios y componentes compartidos; no duplicar el formulario de lotes para muestras.
-- El formulario usa `/ListarArchivos`; «Crear / enviar lote» envía a `/CrearLote` y «Enviar muestra» a `/CrearMuestra`.
+- El formulario usa `/ListarArchivos`; «Crear / enviar lote» envía a `/CrearLote` y «Enviar muestra» a `/SendTestEmail`.
 - Mantener cachés separadas para listas distintas; revisar query keys e invalidaciones.
 - Respetar la serialización legacy: `FormData` con campo `file` que contiene JSON.
 - No interpretar `archiv` como un upload binario sin revisar su uso: el formulario envía nombres de archivos disponibles en el servidor.
