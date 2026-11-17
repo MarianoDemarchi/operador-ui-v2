@@ -100,7 +100,7 @@ export const LoteForm: React.FC<Props> = ({ onCancel }) => {
 
     return {
       version:
-        organizacion?.codigo === "ACSA" && window.location.hostname === "localhost"
+        organizacion?.codigo === "ACSA" 
           ? "v3"
           : "",
       etiquetas: parsed.etiquetas,
